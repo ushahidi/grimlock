@@ -1,0 +1,6 @@
+*.pyc
+config/production_settings.py
+config/development_settings.py
+config/staging_settings.py
+requirements.txt.freeze
+venv
