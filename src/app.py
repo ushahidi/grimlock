@@ -1,6 +1,7 @@
-import redis
+import time
 import sys
 import json
+from qr import Queue
 from config import settings
 from pipeline import process
 from tasks import example, example2
@@ -34,26 +35,24 @@ class App(object):
     pipeline.
 
     """
-    def __init__(self, r, channels):
+    def __init__(self, queue_name):
         """ Init redis pubsub and subscribe to the appropriate channels. 
 
         Args:
             r (redis.Redis): connected redis instance
             channels (array): string names of channels to which we should subscribe
         """
-        self.redis = r
-        self.pubsub = self.redis.pubsub()
-        self.pubsub.subscribe(channels)
+        self.queue = Queue(queue_name)
+        self.queue.serializer = json
 
 
     def work(self, item):
         """ Feed jobs from the queue into the pipeline """
-
         try:
-            data = json.loads(item['data'])
+            data = json.loads(item)
             process(source(data['id']), set_pipeline_steps())
-        except:
-            print "Problem!"
+        except Exception, e:
+            print "Problem! " + str(e)
 
     
     def start(self):
@@ -64,16 +63,18 @@ class App(object):
         print "Starting..."
         while True:
             try:
-                for item in self.pubsub.listen():
+                item = self.queue.pop()
+                if item:
                     self.work(item)
+                time.sleep(1)
             except KeyboardInterrupt:
                 print "Exiting..."
                 sys.exit()
 
 
 
+
 if __name__ == "__main__":
-    r = redis.Redis()
-    app = App(r, [settings.QUEUE_NAME])
+    app = App("transform")
     app.start()  
 
