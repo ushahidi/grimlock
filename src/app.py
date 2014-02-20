@@ -5,17 +5,17 @@ from qr import Queue
 from config import settings
 from pipeline import process
 from tasks import example, example2
+from cn_store_py.connect import get_connection
+from bson import objectid
 
-def source(id):
+def source(db, id):
     """ Returns the function that will be called to feed data into the 
     pipeline. 
 
     """
     def get_doc():
-        return {
-            'a': 'b',
-            'c': 'd'
-        }
+        return db.Item.one({'_id': objectid.ObjectId(id)})
+        #return db.Item.find_one()
 
     return get_doc
 
@@ -44,13 +44,14 @@ class App(object):
         """
         self.queue = Queue(queue_name)
         self.queue.serializer = json
+        self.db = get_connection()
 
 
     def work(self, item):
         """ Feed jobs from the queue into the pipeline """
         try:
             data = json.loads(item)
-            process(source(data['id']), set_pipeline_steps())
+            process(source(self.db, data['id']), set_pipeline_steps())
         except Exception, e:
             print "Problem! " + str(e)
 
