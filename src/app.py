@@ -4,7 +4,7 @@ import json
 from qr import Queue
 from config import settings
 from pipeline import process
-from tasks import example, example2
+from tasks import geocode, example2
 from cn_store_py.connect import get_connection
 from bson import objectid
 
@@ -27,7 +27,7 @@ def set_pipeline_steps():
     received) or saves to the database. 
 
     """
-    return [mod.run for mod in [example, example2]]
+    return [mod.run for mod in [geocode, example2]]
 
 
 class App(object):
