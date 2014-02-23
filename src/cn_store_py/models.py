@@ -15,7 +15,19 @@ class Item(Document):
         'summary': basestring,
         'image': basestring,
         'geo': {
-            'namedPlaces': [basestring],
+            'addressComponents': {
+                'formattedAddress': basestring,
+                'streetNumber': basestring,
+                'streetName': basestring,
+                'neighborhood': basestring,
+                'adminArea5': basestring, # city
+                'adminArea4': basestring, # county
+                'adminArea3': basestring, # state
+                'adminArea2': basestring, # region
+                'adminArea1': basestring, # country
+                'postalCode': basestring
+            },
+            # lng, lat
             'coordinates': [float],
             'accuracy': int,
             'granularity': basestring,
@@ -30,7 +42,7 @@ class Item(Document):
             'name': basestring,
             'nativeName': basestring
         },
-        'sourceID': None,
+        'source': basestring,
         'license': basestring
     }
     required_fields = ['remoteID', 'lifespan']

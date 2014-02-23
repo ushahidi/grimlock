@@ -22,7 +22,7 @@ def run(data):
     if r.status_code != 200:
         return data
 
-    json_data = json.loads(r.text)
+    json_data = r.json()
 
     if len(json_data['resourceSets']) == 0:
         return data
