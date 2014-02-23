@@ -2,6 +2,7 @@
 config/production_settings.py
 config/development_settings.py
 config/staging_settings.py
+config/test_settings.py
 requirements.txt.freeze
 venv
 .DS_Store
