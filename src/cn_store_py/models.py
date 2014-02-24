@@ -4,7 +4,7 @@ import datetime
 
 class Item(Document):
     __collection__ = 'items'
-
+    use_schemaless = True
     structure = {
         'createdAt': datetime.datetime,
         'udpatedAt': datetime.datetime,
@@ -28,7 +28,7 @@ class Item(Document):
                 'postalCode': basestring
             },
             # lng, lat
-            'coordinates': [float],
+            'coordinates': list,
             'accuracy': int,
             'granularity': basestring,
             'locationIdentifiers': {

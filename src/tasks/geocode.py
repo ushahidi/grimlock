@@ -20,6 +20,8 @@ def run(data):
     r = requests.get(url)
     
     if r.status_code != 200:
+        print "ERROR!!! " + str(r.status_code)
+        print r.text
         return data
 
     json_data = r.json()

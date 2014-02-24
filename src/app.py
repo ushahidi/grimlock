@@ -4,7 +4,7 @@ import json
 from qr import Queue
 from config import settings
 from pipeline import process
-from tasks import geocode, example2
+from tasks import geocode, format_address, update_doc
 from cn_store_py.connect import get_connection
 from bson import objectid
 
@@ -14,6 +14,7 @@ def source(db, id):
 
     """
     def get_doc():
+        print "Processing doc " + str(id)
         return db.Item.one({'_id': objectid.ObjectId(id)})
         #return db.Item.find_one()
 
@@ -27,7 +28,15 @@ def set_pipeline_steps():
     received) or saves to the database. 
 
     """
-    return [mod.run for mod in [geocode, example2]]
+    steps = [
+        format_address,
+        geocode,  
+        update_doc
+    ]
+
+    return [mod.run for mod in steps]
+
+PIPELINE = set_pipeline_steps()
 
 
 class App(object):
@@ -51,7 +60,7 @@ class App(object):
         """ Feed jobs from the queue into the pipeline """
         try:
             data = json.loads(item)
-            process(source(self.db, data['id']), set_pipeline_steps())
+            process(source(self.db, data['id']), PIPELINE)
         except Exception, e:
             print "Problem! " + str(e)
 
@@ -67,7 +76,7 @@ class App(object):
                 item = self.queue.pop()
                 if item:
                     self.work(item)
-                time.sleep(1)
+                time.sleep(0.5)
             except KeyboardInterrupt:
                 print "Exiting..."
                 sys.exit()
