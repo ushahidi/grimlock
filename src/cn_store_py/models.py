@@ -1,4 +1,4 @@
-from mongokit import Document
+from mongokit import Document, INDEX_GEO2D
 #from pymongo import objectid
 import datetime
 
@@ -28,7 +28,7 @@ class Item(Document):
                 'postalCode': basestring
             },
             # lng, lat
-            'coordinates': list,
+            'coordinates': None,
             'accuracy': int,
             'granularity': basestring,
             'locationIdentifiers': {
@@ -46,6 +46,12 @@ class Item(Document):
         'license': basestring
     }
     required_fields = ['remoteID', 'lifespan']
+    indexs = [
+        {
+            'fields':[('geo.coordinates',INDEX_GEO2D)],
+        }
+    ]
+
     default_values = {
         'license': 'unknown',
         'lifespan': 'temporary',
