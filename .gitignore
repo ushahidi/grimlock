@@ -6,3 +6,4 @@ config/test_settings.py
 requirements.txt.freeze
 venv
 .DS_Store
+deploy_config.py
