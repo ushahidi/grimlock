@@ -1,5 +1,6 @@
 import sys
 import os
+import deploy_config
 
 # Add current directory to path.
 local_dir = os.path.dirname(__file__)
@@ -7,8 +8,9 @@ sys.path.append(local_dir)
 
 from fabric.api import *
 
-path = '/home/ubuntu/crisisnet/grimlock'
-venv = '/home/ubuntu/crisisnet/grimlock/venv'
+path = '/home/crisisnet/grimlock'
+venv = '/home/crisisnet/grimlock/venv'
+release_file = '/home/crisisnet/releases.grimlock'
 
 @task
 def staging():
@@ -59,14 +61,14 @@ def deploy(branch=None):
     branch = branch or env.branch
     install_deps()
     # Check for first deploy.
-    run("test -d %s || git clone git@bitbucket.org:ushahidi/grimlock.git %s" % (path, path))
+    run("test -d %s || git clone https://github.com/ushahidi/grimlock.git %s" % (path, path))
     
     # Check for virtualenv.
     run('test -d %s || virtualenv %s' % (venv, venv))
 
     with cd(path):
         #run('git branch --set-upstream %s origin/%s' % (branch, branch))
-        do_release()
+        do_release(branch)
         record_release()
 
 
@@ -80,13 +82,13 @@ def copy_private_files():
     put(local_dir + settings_file,path + settings_file,mirror_local_mode=True)
 
 
-def do_release():
+def do_release(branch):
     run('git fetch')
     run('git checkout %s && git pull' % branch)
     with prefix('source %s/bin/activate' % venv):
         run('pip install -r requirements.txt')
     copy_private_files()
-    check_upstart(env.upstart_script)
+    check_upstart()
     sudo('service grimlock stop; service grimlock start GRIMLOCK=%s' % env.app_env)
 
 
