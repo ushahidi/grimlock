@@ -35,7 +35,7 @@ def run(data):
     coords = json_data['resourceSets'][0]['resources'][0]['point']['coordinates']
     
     # API gives us lat,lng and we need lng,lat
-    data['geo']['coordinates'] = {
+    data['geo']['coords'] = {
         'type': 'Point',
         'coordinates': coords[::-1]
     }

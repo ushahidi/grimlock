@@ -28,7 +28,7 @@ class Item(Document):
                 'postalCode': basestring
             },
             # lng, lat
-            'coordinates': None,
+            'coords': None,
             'accuracy': int,
             'granularity': basestring,
             'locationIdentifiers': {

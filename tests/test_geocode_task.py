@@ -6,5 +6,5 @@ def test():
 
     data = geocode.run(data)
 
-    assert 'coordinates' in data['geo']
-    assert len(data['geo']['coordinates']['coordinates']) == 2
+    assert 'coords' in data['geo']
+    assert len(data['geo']['coords']['coordinates']) == 2
