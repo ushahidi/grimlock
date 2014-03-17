@@ -36,7 +36,10 @@ class Item(Document):
                 'authorTimeZone': basestring
             }
         },
-        'tags': [basestring],
+        'tags': [{
+            'name': basestring,
+            'confidence': float
+        }],
         'language': {
             'code': basestring,
             'name': basestring,
