@@ -11,7 +11,12 @@ import json
 from config import settings
 
 def run(data):    
+    # We can only geocode if we have an address
     if 'addressComponents' not in data['geo'] or 'formattedAddress' not in data['geo']['addressComponents']:
+        return data
+
+    # Assumption is that provided coords are accurate enough (if they exist)
+    if 'coords' in data['geo'] and 'coordinates' in data['geo']['coords']:
         return data
 
     url = 'http://dev.virtualearth.net/REST/v1/Locations/%s?key=%s' % (
