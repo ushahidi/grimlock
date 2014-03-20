@@ -51,7 +51,8 @@ class App(object):
             r (redis.Redis): connected redis instance
             channels (array): string names of channels to which we should subscribe
         """
-        self.queue = Queue(queue_name)
+        self.queue = Queue(queue_name, host=settings.REDIS_HOST, 
+            port=settings.REDIS_PORT, password=settings.REDIS_PASSWORD)
         self.queue.serializer = json
         self.db = get_connection()
 
@@ -76,7 +77,7 @@ class App(object):
                 item = self.queue.pop()
                 if item:
                     self.work(item)
-                time.sleep(0.5)
+                time.sleep(0.2)
             except KeyboardInterrupt:
                 print "Exiting..."
                 sys.exit()

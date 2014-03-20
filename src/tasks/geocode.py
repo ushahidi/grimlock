@@ -10,8 +10,8 @@ import requests
 import json
 from config import settings
 
-def run(data):
-    if 'formattedAddress' not in data['geo']['addressComponents']:
+def run(data):    
+    if 'addressComponents' not in data['geo'] or 'formattedAddress' not in data['geo']['addressComponents']:
         return data
 
     url = 'http://dev.virtualearth.net/REST/v1/Locations/%s?key=%s' % (
@@ -20,7 +20,7 @@ def run(data):
     r = requests.get(url)
     
     if r.status_code != 200:
-        print "ERROR!!! " + str(r.status_code)
+        print "Geocode error " + str(r.status_code)
         print r.text
         return data
 

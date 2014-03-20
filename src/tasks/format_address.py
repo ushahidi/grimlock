@@ -1,4 +1,28 @@
 def run(data):
+    address = ''
+
+    if 'addressComponents' in data['geo']:
+        address = build_address_from_components(data)
+    elif 'locationIdentifiers' in data['geo']:
+        address = build_address_from_identifiers(data)
+
+    if len(address) > 0:
+        if 'addressComponents' not in data['geo']:
+            data['geo']['addressComponents'] = {}
+
+        data['geo']['addressComponents']['formattedAddress'] = address
+
+    return data
+
+
+def add_if_exists(obj, key):
+    if key in obj:
+        return obj[key] + ','
+
+    return ''
+
+
+def build_address_from_components(data):
     components = data['geo']['addressComponents']
 
     if 'formattedAddress' in components and len(components['formattedAddress']) > 0:
@@ -21,14 +45,12 @@ def run(data):
 
     address = address[:-1]
 
-    if len(address) > 0:
-        data['geo']['addressComponents']['formattedAddress'] = address
-
-    return data
+    return address
 
 
-def add_if_exists(obj, key):
-    if key in obj:
-        return obj[key] + ','
+def build_address_from_identifiers(data):
+    for key in ['authorLocationName', 'authorTimeZone']:
+        if key in data['geo']['locationIdentifiers']:
+            return data['geo']['locationIdentifiers'][key].strip()
 
     return ''

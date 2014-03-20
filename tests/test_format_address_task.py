@@ -8,3 +8,10 @@ def test():
 
     assert 'formattedAddress' in data['geo']['addressComponents']
     assert data['geo']['addressComponents']['formattedAddress'] == 'Yala,Siaya,Siaya,Kenya'
+
+    data2 = {u'remoteID': u'446712115228061696', u'language': {u'nativeName': u'English', u'code': u'en', u'name': u'English'}, u'license': u'unknown', u'tags': [], u'publishedAt': datetime.datetime(2014, 3, 20, 18, 17, 22), u'summary': u'What exactly has improved in Nairobi county ? Traffic lights? Water bill down? Security? Traffic...', u'content': u'What exactly has improved in Nairobi county ? Traffic lights? Water bill down? Security? Traffic jams? ....not very convinced...', u'source': u'twitter', u'__v': 0, u'lifespan': u'temporary', u'updatedAt': datetime.datetime(2014, 3, 20, 18, 18, 19, 1000), u'_id': '532b30eb7e93ef0000d6596f', u'geo': {u'locationIdentifiers': {u'authorTimeZone': u'Nairobi', u'authorLocationName': u'Nairobi - Kenya '}}, u'createdAt': datetime.datetime(2014, 3, 20, 18, 18, 18, 999000)}
+
+    data2 = format_address.run(data2)
+
+    assert 'formattedAddress' in data2['geo']['addressComponents']
+    assert data2['geo']['addressComponents']['formattedAddress'] == 'Nairobi - Kenya'
