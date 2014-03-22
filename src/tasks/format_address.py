@@ -5,7 +5,7 @@ def run(data):
         address = build_address_from_components(data)
     elif 'locationIdentifiers' in data['geo']:
         address = build_address_from_identifiers(data)
-
+    
     if len(address) > 0:
         if 'addressComponents' not in data['geo']:
             data['geo']['addressComponents'] = {}
@@ -26,7 +26,7 @@ def build_address_from_components(data):
     components = data['geo']['addressComponents']
 
     if 'formattedAddress' in components and len(components['formattedAddress']) > 0:
-        return data
+        return components['formattedAddress']
 
     address = ""
     component_keys = [

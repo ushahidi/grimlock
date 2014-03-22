@@ -38,7 +38,7 @@ class Item(Document):
         },
         'tags': [{
             'name': basestring,
-            'confidence': float
+            'confidence': int
         }],
         'language': {
             'code': basestring,
@@ -49,9 +49,9 @@ class Item(Document):
         'license': basestring
     }
     required_fields = ['remoteID', 'lifespan']
-    indexs = [
+    indexes = [
         {
-            'fields':[('geo.coordinates',INDEX_GEO2D)],
+            'fields':[('geo.coords',INDEX_GEO2D)],
         }
     ]
 

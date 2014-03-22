@@ -64,6 +64,8 @@ class App(object):
             process(source(self.db, data['id']), PIPELINE)
         except Exception, e:
             print "Problem! " + str(e)
+        #data = json.loads(item)
+        #process(source(self.db, data['id']), PIPELINE)
 
     
     def start(self):

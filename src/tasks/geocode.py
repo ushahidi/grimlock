@@ -26,10 +26,14 @@ def run(data):
     
     if r.status_code != 200:
         print "Geocode error " + str(r.status_code)
-        print r.text
+        #print r.text
         return data
 
-    json_data = r.json()
+    try:
+        json_data = r.json()
+    except ValueError, e:
+        print "no json available from geocode"
+        return data
 
     if len(json_data['resourceSets']) == 0:
         return data
