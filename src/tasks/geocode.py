@@ -16,7 +16,7 @@ def run(data):
         return data
 
     # Assumption is that provided coords are accurate enough (if they exist)
-    if 'coords' in data['geo'] and 'coordinates' in data['geo']['coords']:
+    if 'coords' in data['geo']:
         return data
 
     url = 'http://dev.virtualearth.net/REST/v1/Locations/%s?key=%s' % (
@@ -44,9 +44,6 @@ def run(data):
     coords = json_data['resourceSets'][0]['resources'][0]['point']['coordinates']
     
     # API gives us lat,lng and we need lng,lat
-    data['geo']['coords'] = {
-        'type': 'Point',
-        'coordinates': coords[::-1]
-    }
+    data['geo']['coords'] = coords[::-1]
     
     return data
