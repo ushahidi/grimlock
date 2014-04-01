@@ -15,3 +15,43 @@ def test():
 
     assert 'formattedAddress' in data2['geo']['addressComponents']
     assert data2['geo']['addressComponents']['formattedAddress'] == 'Nairobi - Kenya'
+
+    data3 = {
+        "remoteID": "291506692",
+        "content": "Expelordeportindividuals",
+        "source": "gdelt",
+        "fromURL": "http: //www.theage.com.au/world/taliban-attackers-mistake-armed-contractors-for-christian-daycare-workers-20140330-zqolw.html",
+        "summary": "Expelordeportindividuals",
+        "_id": "533a28bec906a78c36984a35",
+        "license": "unknown",
+        "language": {
+            "code": "en",
+            "name": "English",
+            "nativeName": "English"
+        },
+        "tags": [
+            {
+                "name": "conflict",
+                "_id": "533a28bec906a78c36984a36",
+                "confidence": 1
+            }
+        ],
+        "geo": {
+            "coords": [
+                69.1833,
+                34.5167
+            ],
+            "addressComponents": {
+                "formattedAddress": "Kabul, Kabol, Afghanistan"
+            }
+        },
+        "lifespan": "temporary",
+        "createdAt": "2014-04-01T02: 47: 26.495Z",
+        "__v": 0
+    }
+
+    data3 = format_address.run(data3)
+
+    assert 'formattedAddress' in data3['geo']['addressComponents']
+    assert data3['geo']['addressComponents']['formattedAddress'] == "Kabul, Kabol, Afghanistan"
+
