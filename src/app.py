@@ -14,8 +14,9 @@ def source(db, id):
 
     """
     def get_doc():
-        print "Processing doc " + str(id)
-        return db.Item.one({'_id': objectid.ObjectId(id)})
+        #print "Processing doc " + str(id)
+        doc = db.Item.one({'_id': objectid.ObjectId(id)})
+        return doc
         #return db.Item.find_one()
 
     return get_doc
@@ -63,7 +64,9 @@ class App(object):
             data = json.loads(item)
             process(source(self.db, data['id']), PIPELINE)
         except Exception, e:
+            import traceback
             print "Problem! " + str(e)
+            print traceback.format_exc()
         #data = json.loads(item)
         #process(source(self.db, data['id']), PIPELINE)
 
