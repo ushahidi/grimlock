@@ -1,6 +1,9 @@
 def run(data):
     address = ''
 
+    if not 'geo' in data:
+        return data
+
     if 'addressComponents' in data['geo']:
         address = build_address_from_components(data)
     elif 'locationIdentifiers' in data['geo']:

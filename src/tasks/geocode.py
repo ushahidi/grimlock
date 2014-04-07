@@ -12,7 +12,7 @@ from config import settings
 
 def run(data):    
     # We can only geocode if we have an address
-    if 'addressComponents' not in data['geo'] or 'formattedAddress' not in data['geo']['addressComponents']:
+    if 'geo' not in data or 'addressComponents' not in data['geo'] or 'formattedAddress' not in data['geo']['addressComponents']:
         return data
 
     # Assumption is that provided coords are accurate enough (if they exist)
