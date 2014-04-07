@@ -56,4 +56,4 @@ def test():
     app.work(json.dumps({"id":str(item['_id'])}))
     doc = source(app.db, item['_id'])()
 
-    assert doc['geo']['addressComponents']['formattedAddress'] == "Kabul, Kabol, Afghanistan"
+    assert doc['geo']['addressComponents']['formattedAddress'] == "Kabul, Afghanistan"
