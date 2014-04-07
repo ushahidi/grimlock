@@ -19,6 +19,7 @@ class Item(Document):
                 'formattedAddress': basestring,
                 'streetNumber': basestring,
                 'streetName': basestring,
+                'streetAddress': basestring,
                 'neighborhood': basestring,
                 'adminArea5': basestring, # city
                 'adminArea4': basestring, # county
