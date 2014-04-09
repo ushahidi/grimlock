@@ -88,6 +88,9 @@ def do_release(branch):
     with prefix('source %s/bin/activate' % venv):
         run('pip install -r requirements.txt')
         run('python -m nltk.downloader maxent_ne_chunker')
+        run('python -m nltk.downloader words')
+        run('python -m nltk.downloader treebank')
+        run('python -m nltk.downloader maxent_treebank_pos_tagger')
     copy_private_files()
     check_upstart()
     sudo('service grimlock stop; service grimlock start GRIMLOCK=%s' % env.app_env)

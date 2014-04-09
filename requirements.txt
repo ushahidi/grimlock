@@ -9,3 +9,5 @@ langid==1.1.4dev
 nltk==2.0.4
 beautifulsoup4==4.3.2
 newspaper==0.0.6
+jellyfish==0.2.2
+pycountry==1.5
