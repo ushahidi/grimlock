@@ -1,3 +1,4 @@
+import logging
 import time
 import sys
 import json
@@ -9,6 +10,8 @@ from tasks import (geocode, format_address, update_doc, identify_language,
     add_default_values, reverse_geocode)
 from cn_store_py.connect import get_connection
 from bson import objectid
+
+logger = logging.getLogger(__name__)
 
 def source(db, id):
     """ Returns the function that will be called to feed data into the 
@@ -70,8 +73,8 @@ class App(object):
             process(source(self.db, data['id']), PIPELINE)
         except Exception, e:
             import traceback
-            print "Problem! " + str(e)
-            print traceback.format_exc()
+            logger.error("Problem! " + str(e))
+            logger.error(traceback.format_exc())
         #data = json.loads(item)
         #process(source(self.db, data['id']), PIPELINE)
 
@@ -81,7 +84,7 @@ class App(object):
         to the worker 
 
         """
-        print "Starting..."
+        logger.warn("Starting grimlock")
         while True:
             try:
                 item = self.queue.pop()
@@ -89,7 +92,7 @@ class App(object):
                     self.work(item)
                 time.sleep(0.2)
             except KeyboardInterrupt:
-                print "Exiting..."
+                logger.warn("Exiting grimlock")
                 sys.exit()
 
 
@@ -124,11 +127,14 @@ if __name__ == "__main__":
     args = sys.argv
 
     if len(args) == 1:
+        logger.info("No args, running process")
         app.start()
 
     elif len(args) == 2:
+        logger.info("Running with one arg: " + args[1])
         run_for_set(db=app.db, start_date=args[1])
 
     elif len(args) == 3:
+        logger.info("Running with two args: " + args[2])
         run_for_set(db=app.db, start_date=args[1], end_date=args[2])
 

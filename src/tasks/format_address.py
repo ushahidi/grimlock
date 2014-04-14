@@ -15,8 +15,6 @@ def run(data):
 
         data['geo']['addressComponents']['formattedAddress'] = address
 
-    print data['geo']['addressComponents']
-
     return data
 
 

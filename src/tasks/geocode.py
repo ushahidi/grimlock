@@ -8,7 +8,10 @@ modifications or update the document in the datastore.
 
 import requests
 import json
+import logging
 from config import settings
+
+logger = logging.getLogger(__name__)
 
 def run(data):    
     # We can only geocode if we have an address
@@ -25,14 +28,14 @@ def run(data):
     r = requests.get(url)
     
     if r.status_code != 200:
-        print "Geocode error " + str(r.status_code)
+        logger.error("Geocode error " + str(r.status_code))
         #print r.text
         return data
 
     try:
         json_data = r.json()
     except ValueError, e:
-        print "no json available from geocode"
+        logger.error("no json available from geocode")
         return data
 
     if len(json_data['resourceSets']) == 0:

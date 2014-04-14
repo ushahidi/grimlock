@@ -1,6 +1,8 @@
 import os
 import importlib
 import sys
+import logging
+logger = logging.getLogger(__name__)
 
 QUEUE_NAME = 'transform'
 
@@ -20,6 +22,6 @@ if environ:
 else:
     try:
         from development_settings import *
-        print "Using GRIMLOCK=%s" % environ
+        logger.info("Using GRIMLOCK=%s" % environ)
     except ImportError, ex:
         pass

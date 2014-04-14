@@ -26,14 +26,14 @@ def run(data):
     r = requests.get(url)
 
     if r.status_code != 200:
-        print "Geocode error " + str(r.status_code)
+        logger.error("Geocode error " + str(r.status_code))
         #print r.text
         return data
 
     try:
         json_data = r.json()
     except ValueError, e:
-        print "no json available from geocode"
+        logger.error("no json available from geocode")
         return data
 
 

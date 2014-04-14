@@ -40,7 +40,7 @@ def install_deps():
     """
     Installs os and base packages.
     """
-    deps = ['build-essential python-dev python-pip libevent-dev libpq-dev git']
+    deps = ['build-essential python-dev python-pip libevent-dev libpq-dev libxml2-dev libxslt1-dev git']
     for dep in deps:
         sudo('apt-get install -y %s' % dep)
     sudo('pip install virtualenv')
