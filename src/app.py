@@ -113,7 +113,7 @@ def run_for_set(db, start_date=None, end_date=None):
     }
 
     if end:
-        query_params['createdAt'] = { '$lte': end }
+        query_params['createdAt'] = { '$gte': start, '$lte': end }
 
     docs = db.Item.find(query_params)
     
@@ -126,15 +126,17 @@ if __name__ == "__main__":
     app = App("transform")
     args = sys.argv
 
-    if len(args) == 1:
-        logger.info("No args, running process")
+    if len(args) > 1 and args[1] == '--fordates':
+
+        if len(args) == 3:
+            logger.info("Running with one arg: " + args[2])
+            run_for_set(db=app.db, start_date=args[2])
+
+        elif len(args) == 4:
+            logger.info("Running with two args: " + args[2] + ", " + args[3])
+            run_for_set(db=app.db, start_date=args[2], end_date=args[3])
+
+    else:
+        logger.info("Running process")
         app.start()
-
-    elif len(args) == 2:
-        logger.info("Running with one arg: " + args[1])
-        run_for_set(db=app.db, start_date=args[1])
-
-    elif len(args) == 3:
-        logger.info("Running with two args: " + args[2])
-        run_for_set(db=app.db, start_date=args[1], end_date=args[2])
 
