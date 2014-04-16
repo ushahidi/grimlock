@@ -28,6 +28,7 @@ class Item(Document):
                 'adminArea1': basestring, # country
                 'postalCode': basestring
             },
+            'mentionedPlaces': [basestring],
             # lng, lat
             'coords': None,
             'accuracy': int,
