@@ -7,7 +7,7 @@ from qr import Queue
 from config import settings
 from pipeline import process
 from tasks import (geocode, format_address, update_doc, identify_language, 
-    add_default_values, reverse_geocode)
+    add_default_values, reverse_geocode, extract_place)
 from cn_store_py.connect import get_connection
 from bson import objectid
 
@@ -37,6 +37,7 @@ def set_pipeline_steps():
     steps = [
         add_default_values,
         identify_language,
+        extract_place,
         format_address,
         geocode,
         reverse_geocode,  
