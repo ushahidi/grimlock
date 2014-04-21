@@ -89,9 +89,10 @@ class App(object):
         while True:
             try:
                 item = self.queue.pop()
+                print item
                 if item:
                     self.work(item)
-                time.sleep(0.2)
+                time.sleep(1)
             except KeyboardInterrupt:
                 logger.warn("Exiting grimlock")
                 sys.exit()

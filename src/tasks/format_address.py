@@ -19,7 +19,7 @@ def run(data):
 
 
 def add_if_exists(obj, key):
-    if key in obj:
+    if key in obj and obj[key]:
         return obj[key] + ','
 
     return ''
