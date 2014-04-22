@@ -37,7 +37,7 @@ def set_pipeline_steps():
     steps = [
         add_default_values,
         identify_language,
-        extract_place,
+        #extract_place,
         format_address,
         geocode,
         reverse_geocode,  
@@ -89,7 +89,6 @@ class App(object):
         while True:
             try:
                 item = self.queue.pop()
-                print item
                 if item:
                     self.work(item)
                 time.sleep(1)
