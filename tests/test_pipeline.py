@@ -1,10 +1,15 @@
 import os
 os.environ['GRIMLOCK'] = 'test'
+import logging
+requests_log = logging.getLogger("pycountry.db")
+requests_log.setLevel(logging.WARNING)
 
 def test():
     import json
     from src.app import App, source
-    from src.cn_store_py.models import Item
+    from cn_search_py.connect import (setup_indexes, 
+    get_connection as get_search_connection)
+    from cn_search_py.collections import ItemCollection
 
     app = App("transform")
 
@@ -46,14 +51,12 @@ def test():
       'lifespan': "temporary"
     }
 
-    item = app.db.Item()
+    item = app.item_collection.make_model(data)
+    saved = item.save()
 
-    for key in data:
-        item[key] = data[key]
-    
-    item.save()
+    app.work(json.dumps({"id":str(saved['_id'])}))
+    doc = source(app.item_collection, saved['_id'])()
 
-    app.work(json.dumps({"id":str(item['_id'])}))
-    doc = source(app.db, item['_id'])()
+    print doc
 
     assert doc['geo']['addressComponents']['formattedAddress'] == "Kabul, Afghanistan"

@@ -9,25 +9,36 @@ from pipeline import process
 from tasks import (geocode, format_address, update_doc, identify_language, 
     add_default_values, reverse_geocode, extract_place)
 from cn_store_py.connect import get_connection
+from cn_search_py.connect import (setup_indexes, 
+    get_connection as get_search_connection)
+from cn_search_py.collections import ItemCollection
+
 from bson import objectid
 
 logger = logging.getLogger(__name__)
 
-def source(db, id):
+
+def source(item_collection, doc_id):
     """ Returns the function that will be called to feed data into the 
     pipeline. 
 
     """
     def get_doc():
+        search_params = [
+            {
+                'field':'_id',
+                'value': doc_id
+            }
+        ]
         #print "Processing doc " + str(id)
-        doc = db.Item.one({'_id': objectid.ObjectId(id)})
+        doc = item_collection.get(search_params)
         return doc
         #return db.Item.find_one()
 
     return get_doc
 
 
-def set_pipeline_steps():
+def set_pipeline_steps(**kwargs):
     """ Define the order in which tasks should be executed in the pipeline. Each 
     task module should have a `run` method, which accepts a single argument 
     and either returns a value (probably a modified version of the object it 
@@ -43,10 +54,8 @@ def set_pipeline_steps():
         reverse_geocode,  
         update_doc
     ]
-
-    return [mod.run for mod in steps]
-
-PIPELINE = set_pipeline_steps()
+    
+    return [mod.setup(**kwargs) if hasattr(mod, 'setup') else mod.run for mod in steps]
 
 
 class App(object):
@@ -65,13 +74,16 @@ class App(object):
             port=settings.REDIS_PORT, password=settings.REDIS_PASSWORD)
         self.queue.serializer = json
         self.db = get_connection()
+        self.search_db = get_search_connection()
+        self.item_collection = ItemCollection(self.search_db)
+        self.pipeline = set_pipeline_steps(item_collection=self.item_collection)
 
 
     def work(self, item):
         """ Feed jobs from the queue into the pipeline """
         try:
             data = json.loads(item)
-            process(source(self.db, data['id']), PIPELINE)
+            process(source(self.item_collection, data['id']), self.pipeline)
         except Exception, e:
             import traceback
             logger.error("Problem! " + str(e))
@@ -98,9 +110,11 @@ class App(object):
 
 
 
-def run_for_set(db, start_date=None, end_date=None):
+def run_for_set(item_collection, start_date=None, end_date=None):
     if not start_date:
         raise Exception("run_for_set start_date is required") 
+
+    pipeline = set_pipeline_steps(item_collection=item_collection)
 
     # No need to fail gracefully here. If the format is wrong go ahead and crash
     start = datetime.strptime(start_date, "%Y-%m-%d")
@@ -119,7 +133,7 @@ def run_for_set(db, start_date=None, end_date=None):
     docs = db.Item.find(query_params)
     
     for doc in docs:
-        process(lambda: doc, PIPELINE)
+        process(lambda: doc, pipeline)
 
 
 
@@ -131,11 +145,11 @@ if __name__ == "__main__":
 
         if len(args) == 3:
             logger.info("Running with one arg: " + args[2])
-            run_for_set(db=app.db, start_date=args[2])
+            run_for_set(db=app.item_collection, start_date=args[2])
 
         elif len(args) == 4:
             logger.info("Running with two args: " + args[2] + ", " + args[3])
-            run_for_set(db=app.db, start_date=args[2], end_date=args[3])
+            run_for_set(db=app.item_collection, start_date=args[2], end_date=args[3])
 
     else:
         logger.info("Running process")
