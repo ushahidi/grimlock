@@ -91,6 +91,10 @@ class ItemCollection(Collection):
                         'type': 'geo_point'
                     }
                 }
+            },
+            'remoteID': {
+                "type" : "string", 
+                "index" : "not_analyzed"
             }
         }
     }

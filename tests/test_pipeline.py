@@ -59,4 +59,4 @@ def test():
 
     print doc
 
-    assert doc['geo']['addressComponents']['formattedAddress'] == "Kabul, Afghanistan"
+    assert doc['remoteID'] == "291506692"
