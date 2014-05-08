@@ -7,7 +7,8 @@ from qr import Queue
 from config import settings
 from pipeline import process
 from tasks import (geocode, format_address, update_doc, identify_language, 
-    add_default_values, reverse_geocode, extract_place)
+    add_default_values, reverse_geocode, extract_place, translate_content,
+    relevance_classifier)
 from cn_store_py.connect import get_connection
 from cn_search_py.connect import (setup_indexes, 
     get_connection as get_search_connection)
@@ -48,6 +49,8 @@ def set_pipeline_steps(**kwargs):
     steps = [
         add_default_values,
         identify_language,
+        translate_content,
+        relevance_classifier,
         #extract_place,
         format_address,
         geocode,
@@ -136,6 +139,10 @@ def run_for_set(item_collection, start_date=None, end_date=None):
         process(lambda: doc, pipeline)
 
 
+def run_for_single(item_collection, doc_id):
+    pipeline = set_pipeline_steps(item_collection=item_collection)
+    process(source(item_collection, doc_id), pipeline)
+
 
 if __name__ == "__main__":
     app = App("transform")
@@ -150,6 +157,9 @@ if __name__ == "__main__":
         elif len(args) == 4:
             logger.info("Running with two args: " + args[2] + ", " + args[3])
             run_for_set(db=app.item_collection, start_date=args[2], end_date=args[3])
+
+    elif len(args) > 1 and args[1] == '--fordoc':
+        run_for_single(app.item_collection, args[2])
 
     else:
         logger.info("Running process")

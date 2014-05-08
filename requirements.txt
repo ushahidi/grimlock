@@ -8,3 +8,5 @@ requests==2.2.1
 langid==1.1.4dev
 geograpy==0.3.4
 elasticsearch==1.0.0
+jellyfish==0.2.2
+microsofttranslator==0.4
