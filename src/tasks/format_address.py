@@ -15,6 +15,24 @@ def run(data):
 
         data['geo']['addressComponents']['formattedAddress'] = address
 
+
+    if 'entities' not in data:
+        data['entities'] = []
+
+    component_keys = [ 
+        'neighborhood', 
+        'adminArea5',
+        'adminArea4',
+        'adminArea3',
+        'adminArea2',
+        'adminArea1'
+    ]
+
+    for key in component_keys:
+        if key in data['geo']['addressComponents'] and data['geo']['addressComponents'][key] not in data['entities']:
+            data['entities'].append(data['geo']['addressComponents'][key])
+
+
     return data
 
 
@@ -22,7 +40,7 @@ def add_if_exists(obj, key):
     if key in obj and obj[key]:
         return obj[key] + ','
 
-    return ''
+    return ''    
 
 
 def build_address_from_components(data):

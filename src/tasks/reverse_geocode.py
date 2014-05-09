@@ -36,7 +36,6 @@ def run(data):
         logger.error("no json available from geocode")
         return data
 
-
     if len(json_data['resourceSets']) == 0:
         return data
 

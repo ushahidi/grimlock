@@ -4,17 +4,25 @@ def run(data):
     if 'coords' in data['geo']:
         return data
 
-
-    if 'fromURL' in data:
+    if 'fromURL' in data and data['source'] in ['gdelt']:
         pc = geograpy.get_place_context(url=data['fromURL'])
 
-    elif 'content' in data and len(data['content']) > 0:
-        pc = geograpy.get_place_context(text=data['content'])
+    elif 'searchText' in data and len(data['searchText']) > 0:
+        if 'contentEnglish' in data:
+            field = 'contentEnglish'
+        else:
+            field = 'searchText'
+        pc = geograpy.get_place_context(text=data[field])
 
     else:
         return data
 
-    data['geo']['mentionedPlaces'] = list(set(pc.places))
+    if 'entities' not in data:
+        data['entities'] = []
+
+    for place in list(set(pc.places)):
+        if place not in data['entities']:
+            data['entities'].append(place)
 
     # starting from scratch with no location data
     if 'addressComponents' not in data['geo']:

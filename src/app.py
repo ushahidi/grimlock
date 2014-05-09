@@ -8,7 +8,7 @@ from config import settings
 from pipeline import process
 from tasks import (geocode, format_address, update_doc, identify_language, 
     add_default_values, reverse_geocode, extract_place, translate_content,
-    relevance_classifier)
+    relevance_classifier, update_search_text)
 from cn_store_py.connect import get_connection
 from cn_search_py.connect import (setup_indexes, 
     get_connection as get_search_connection)
@@ -50,11 +50,11 @@ def set_pipeline_steps(**kwargs):
         add_default_values,
         identify_language,
         translate_content,
-        relevance_classifier,
         #extract_place,
+        relevance_classifier,
         format_address,
         geocode,
-        reverse_geocode,  
+        reverse_geocode,
         update_doc
     ]
     

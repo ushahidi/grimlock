@@ -13,7 +13,8 @@ def run(data):
     
     try:
         data['contentEnglish'] = translator.translate(data['content'], "en")
-    except:
+    except Exception, e:
+        print e
         pass
 
     return data

@@ -104,18 +104,23 @@ class Item(Model):
                 data['language'] = language_codes[data['language']['code']]
 
 
-        search_text = ''
-
-        if 'summary' in data:
-            search_text += data['summary']
+        data['searchText'] = ''
 
         if 'content' in data:
-            search_text += ' ' + data['content']
+            data['searchText'] = data['content']
+
+        if 'summary' in data:
+            data['searchText'] += ' ' + data['summary']
+
+        if 'contentEnglish' in data:
+            data['searchText'] += ' ' + data['contentEnglish']
+
+        if 'entities' in data:
+            data['searchText'] += ' ' + ' '.join(data['entities'])
 
         if 'tags' in data:
-            tag_text = ' '.join([x['name'] for x in data['tags']])
-            search_text += tag_text
+            data['searchText'] += ' ' + ' '.join([tag['name'] for tag in data['tags']])
 
-        data['searchText'] = search_text
+        #data['searchText'] = search_text
 
         return data
