@@ -8,7 +8,7 @@ from config import settings
 from pipeline import process
 from tasks import (geocode, format_address, update_doc, identify_language, 
     add_default_values, reverse_geocode, extract_place, translate_content,
-    relevance_classifier, extract_content, update_search_text)
+    relevance_classifier, extract_content)
 from cn_store_py.connect import get_connection
 from cn_search_py.connect import (setup_indexes, 
     get_connection as get_search_connection)
