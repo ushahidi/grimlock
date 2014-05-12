@@ -23,6 +23,34 @@ class Collection(object):
 
                 _params.append({ 'term': obj })
 
+            elif param['op'] is 'between':
+                obj = {}
+
+                obj[param['field']] = {
+                    'lte': param['value'][1],
+                    'gte': param['value'][0]
+                }
+
+                _params.append({ 'range': obj })
+
+            elif '>' in param['op'] or '<' in param['op']:
+                obj = {}
+
+                keys = {
+                    '>': 'gt',
+                    '<': 'lt',
+                    '>=': 'gte',
+                    '<=': 'lte'
+                }
+
+                key = keys[param['op']]
+
+                obj[param['field']] = {}
+                obj[param['field']][key] = param['value'] 
+
+                _params.append({ 'range': obj })
+
+
         if len(_params) is 0:
             return _params[0]
 
@@ -44,7 +72,8 @@ class Collection(object):
         kwargs = {
             'index': self.index,
             'doc_type': self.doc_type,
-            'body': body
+            'body': body,
+            'size': limit
         }
 
         res = self.conn.search(**kwargs)
@@ -73,8 +102,19 @@ class Collection(object):
             (self.model.__name__, res['hits']['total'], params))
 
 
-    def find(self, params):
+    def find(self, params, limit=100, offset=0):
         res = self._search(params)
+        docs = []
+        if res['hits']['total'] > 0:
+            for hit in res['hits']['hits']:
+                doc = hit['_source']
+                doc['id'] = hit['_id']
+                docs.append(doc)
+
+        return {
+            'total': res['hits']['total'],
+            'docs': docs
+        }
 
 
 class ItemCollection(Collection):

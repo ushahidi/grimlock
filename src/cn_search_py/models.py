@@ -103,6 +103,29 @@ class Item(Model):
             if data['language']['code'] in language_codes.codes:
                 data['language'] = language_codes[data['language']['code']]
 
+        
+        def unique_tags(tags):
+            utags = []
+            utags_names = []
+
+            for tag in tags:
+                if tag['name'] not in utags_names:
+                    utags.append(tag)
+                    utags_names.append(tag['name'])
+
+            return utags
+
+
+        if 'tags' in data:
+            data['tags'] = unique_tags(data['tags'])
+
+
+        if 'tags' in data and len(data['tags']) > 10:
+            data['tags'] = data['tags'][:10]
+
+        if 'entities' in data:
+            data['entities'] = [entity for entity in data['entities'] if entity]
+
 
         data['searchText'] = ''
 

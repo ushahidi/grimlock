@@ -95,7 +95,11 @@ keywords = [
         'tags': ['armed-conflict', 'conflict']
     },
     {
-        'word': 'artillery rocket',
+        'word': 'artillery',
+        'tags': ['armed-conflict', 'conflict']
+    },
+    {
+        'word': 'rocket',
         'tags': ['armed-conflict', 'conflict']
     },
     {

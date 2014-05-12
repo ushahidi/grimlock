@@ -1,21 +1,35 @@
 import geograpy
 
+def setup(**kwargs):
+    pc = geograpy.places.PlaceContext([])
+    pc.populate_db()
+
+    return run
+
 def run(data):
     if 'coords' in data['geo']:
         return data
 
     if 'fromURL' in data and data['source'] in ['gdelt']:
-        pc = geograpy.get_place_context(url=data['fromURL'])
+        kwargs = {
+            'url': data['fromURL']
+        }
 
-    elif 'searchText' in data and len(data['searchText']) > 0:
+    else:
         if 'contentEnglish' in data:
             field = 'contentEnglish'
         else:
-            field = 'searchText'
-        pc = geograpy.get_place_context(text=data[field])
+            field = 'content'
 
-    else:
+        kwargs = {
+            'text': data[field]
+        }
+    
+    try:    
+        pc = geograpy.get_place_context(**kwargs)
+    except:
         return data
+
 
     if 'entities' not in data:
         data['entities'] = []
@@ -54,8 +68,8 @@ def run(data):
     else:
         # top down from country
         if 'adminArea1' in data['geo']['addressComponents']:
-            country = data['geo']['addressComponents']['adminArea1']
-            
+            country = pc.correct_country_mispelling(data['geo']['addressComponents']['adminArea1'])
+
             # now that we have a a country, get regions cities that we might 
             # know about, assuming they are within that country
             data = region_city_for_country(data, country, pc)

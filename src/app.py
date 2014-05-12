@@ -8,7 +8,7 @@ from config import settings
 from pipeline import process
 from tasks import (geocode, format_address, update_doc, identify_language, 
     add_default_values, reverse_geocode, extract_place, translate_content,
-    relevance_classifier, update_search_text)
+    relevance_classifier, extract_content, update_search_text)
 from cn_store_py.connect import get_connection
 from cn_search_py.connect import (setup_indexes, 
     get_connection as get_search_connection)
@@ -48,9 +48,10 @@ def set_pipeline_steps(**kwargs):
     """
     steps = [
         add_default_values,
+        extract_content,
         identify_language,
         translate_content,
-        #extract_place,
+        extract_place,
         relevance_classifier,
         format_address,
         geocode,
@@ -121,22 +122,37 @@ def run_for_set(item_collection, start_date=None, end_date=None):
 
     # No need to fail gracefully here. If the format is wrong go ahead and crash
     start = datetime.strptime(start_date, "%Y-%m-%d")
+    search_val = start
+    search_op = '>'
     end = None
 
     if end_date:
-        end = datetime.strptime(start_date, "%Y-%m-%d")
+        end = datetime.strptime(end_date, "%Y-%m-%d")
+        search_val = [start, end]
+        search_op = 'between'
 
-    query_params = {
-        'createdAt': { '$gte': start }
-    }
+    search_params = [
+        {
+            'field':'updatedAt',
+            'value': search_val,
+            'op': search_op
+        }
+    ]
 
-    if end:
-        query_params['createdAt'] = { '$gte': start, '$lte': end }
+    def run(offset=0):
+        docs = item_collection.find(search_params, offset=offset)
+        print len(docs['docs'])
+        for doc in docs['docs']:
+            #pass
+            process(lambda: doc, pipeline)
 
-    docs = db.Item.find(query_params)
-    
-    for doc in docs:
-        process(lambda: doc, pipeline)
+        offset += len(docs['docs'])
+        if offset < docs['total']:
+            run(offset=offset)
+        else:
+            print 'done'
+
+    run()
 
 
 def run_for_single(item_collection, doc_id):
@@ -152,11 +168,11 @@ if __name__ == "__main__":
 
         if len(args) == 3:
             logger.info("Running with one arg: " + args[2])
-            run_for_set(db=app.item_collection, start_date=args[2])
+            run_for_set(app.item_collection, start_date=args[2])
 
         elif len(args) == 4:
             logger.info("Running with two args: " + args[2] + ", " + args[3])
-            run_for_set(db=app.item_collection, start_date=args[2], end_date=args[3])
+            run_for_set(app.item_collection, start_date=args[2], end_date=args[3])
 
     elif len(args) > 1 and args[1] == '--fordoc':
         run_for_single(app.item_collection, args[2])

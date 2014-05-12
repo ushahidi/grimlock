@@ -7,8 +7,12 @@ import jellyfish
 from .data import word_tag_map
 
 def fuzzy_match(s1, s2, max_dist=.9):
-    distance = jellyfish.jaro_distance(s1, s2)
-    is_match = distance >= max_dist
+    try:
+        distance = jellyfish.jaro_distance(s1, s2)
+        is_match = distance >= max_dist
+    except:
+        is_match = False
+        distance = 0
 
     return is_match, distance
 
@@ -65,13 +69,17 @@ def setup(**kwargs):
             logger.warn('No tags available for relevance_classifier')
             return data
 
-        data['tags'] = []
+        #data['tags'] = []
         if 'tags' in data:
             found_tags = [_ for _ in data['tags']]
         else:
             found_tags = []
 
+
         def add_tag(tag):
+            if len(found_tags) > 20:
+                return
+
             found_tags.append({'name': tag['name'], 'confidence': 1})
             if 'categories' in tag:
                 for category in tag['categories']:
@@ -111,7 +119,9 @@ def setup(**kwargs):
                 data['tags'] = found_tags
             else:
                 for tag in found_tags:
-                    data['tags'].append(tag)
+                    if not has_tag(tag['name'], data['tags']):
+                        data['tags'].append(tag)
+
 
         """
         words = data[field].split()

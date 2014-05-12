@@ -6,7 +6,9 @@ mongokit==0.9.1.1
 nose==1.3.0
 requests==2.2.1
 langid==1.1.4dev
-geograpy==0.3.5
+geograpy==0.3.7
 elasticsearch==1.0.0
 jellyfish==0.2.2
 microsofttranslator==0.4
+goslate==1.2.0
+newspaper==0.0.6
