@@ -103,6 +103,10 @@ keywords = [
         'tags': ['armed-conflict', 'conflict']
     },
     {
+        'word': 'missle',
+        'tags': ['armed-conflict', 'conflict']
+    },
+    {
         'word': 'cluster',
         'tags': ['armed-conflict', 'conflict']
     },

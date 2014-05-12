@@ -1,8 +1,8 @@
 import geograpy
 
 def setup(**kwargs):
-    pc = geograpy.places.PlaceContext([])
-    pc.populate_db()
+    #pc = geograpy.places.PlaceContext([])
+    #pc.populate_db()
 
     return run
 

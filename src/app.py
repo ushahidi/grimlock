@@ -51,7 +51,7 @@ def set_pipeline_steps(**kwargs):
         extract_content,
         identify_language,
         translate_content,
-        extract_place,
+        #extract_place,
         relevance_classifier,
         format_address,
         geocode,
