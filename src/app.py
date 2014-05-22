@@ -16,7 +16,7 @@ from cn_search_py.collections import ItemCollection
 
 from bson import objectid
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('grimlock')
 
 
 def source(item_collection, doc_id):
@@ -182,6 +182,6 @@ if __name__ == "__main__":
         run_for_single(app.item_collection, args[2])
 
     else:
-        logger.info("Running process")
+        logger.info("Starting grimlock")
         app.start()
 
