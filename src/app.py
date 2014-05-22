@@ -51,7 +51,7 @@ def set_pipeline_steps(**kwargs):
         extract_content,
         identify_language,
         translate_content,
-        #extract_place,
+        extract_place,
         relevance_classifier,
         format_address,
         geocode,
@@ -136,6 +136,10 @@ def run_for_set(item_collection, start_date=None, end_date=None):
             'field':'updatedAt',
             'value': search_val,
             'op': search_op
+        },
+        {
+            'field': 'source',
+            'value': 'twitter'
         }
     ]
 

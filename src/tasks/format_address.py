@@ -1,23 +1,9 @@
 def run(data):
     address = ''
 
-    if not 'geo' in data:
+    if 'geo' not in data:
         return data
 
-    if 'addressComponents' in data['geo']:
-        address = build_address_from_components(data)
-    elif 'locationIdentifiers' in data['geo']:
-        address = build_address_from_identifiers(data)
-    
-    if len(address) > 0:
-        if 'addressComponents' not in data['geo']:
-            data['geo']['addressComponents'] = {}
-
-        data['geo']['addressComponents']['formattedAddress'] = address
-
-
-    if 'entities' not in data:
-        data['entities'] = []
 
     component_keys = [ 
         'neighborhood', 
@@ -27,6 +13,28 @@ def run(data):
         'adminArea2',
         'adminArea1'
     ]
+
+    has_address = False
+    if 'addressComponents' in data['geo']:
+        for key in component_keys:
+            if key in data['geo']['addressComponents']:
+                has_address = True
+
+    
+    if has_address:
+        address = build_address_from_components(data)
+    elif 'locationIdentifiers' in data['geo']:
+        address = build_address_from_identifiers(data)
+    
+    if address and len(address) > 0:
+        if 'addressComponents' not in data['geo']:
+            data['geo']['addressComponents'] = {}
+
+        data['geo']['addressComponents']['formattedAddress'] = address
+
+
+    if 'entities' not in data:
+        data['entities'] = []
 
     for key in component_keys:
         if key in data['geo']['addressComponents'] and data['geo']['addressComponents'][key] not in data['entities']:
@@ -70,8 +78,19 @@ def build_address_from_components(data):
 
 
 def build_address_from_identifiers(data):
+    """
     for key in ['authorLocationName', 'authorTimeZone']:
         if key in data['geo']['locationIdentifiers']:
             return data['geo']['locationIdentifiers'][key].strip()
 
     return ''
+    """
+    loc_id = data['geo']['locationIdentifiers']
+    if 'authorTimeZone' in loc_id and loc_id['authorTimeZone']:
+        return data['geo']['locationIdentifiers']['authorTimeZone']
+
+    elif 'authorLocationName' in loc_id and loc_id['authorLocationName']:
+        return data['geo']['locationIdentifiers']['authorLocationName']
+
+    else:
+        return ''

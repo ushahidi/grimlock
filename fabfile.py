@@ -19,21 +19,21 @@ def staging():
     env.password = deploy_config.STAGING_PASSWORD
     env.key_filename = ''
     env.branch = 'development'
-    env.upstart_script = 'grimlock.conf'
+    env.upstart_script = 'grimlock'
     env.settings_file = 'staging_settings.py'
     env.app_env = 'staging'
 
 
 @task
 def production():
-    env.host_string = ''
-    env.user = ''
-    env.password = ''
-    env.key_filename = ''
+    env.host_string = deploy_config.PROD_HOST
+    env.user = deploy_config.PROD_USER
+    env.password = deploy_config.PROD_PASSWORD
     env.branch = 'master'
-    env.upstart_script = 'grimlock.conf'
+    env.upstart_script = 'grimlock_prod'
     env.settings_file = 'production_settings.py'
     env.app_env = 'production'
+    env.port = 15922
 
 
 def install_deps():
@@ -51,8 +51,9 @@ def check_upstart():
     Checks if uwsgi upstart exists; if not, upstart job is created.
     If it exists and is different from the checked-in version, it's updated.
     """
-    sudo('test -f /etc/init/grimlock.conf || cp etc/grimlock.conf /etc/init')
-    sudo('diff etc/grimlock.conf /etc/init/grimlock.conf || cp etc/grimlock.conf /etc/init')
+    conf = env.upstart_script+'.conf'
+    sudo('test -f /etc/init/'+conf+' || cp etc/'+conf+' /etc/init')
+    sudo('diff etc/'+conf+' /etc/init/'+conf+' || cp etc/'+conf+' /etc/init')
 
 
 @task
@@ -93,7 +94,7 @@ def do_release(branch):
         run('python -m nltk.downloader maxent_treebank_pos_tagger')
     copy_private_files()
     check_upstart()
-    sudo('service grimlock stop; service grimlock start GRIMLOCK=%s' % env.app_env)
+    sudo('service '+env.upstart_script+' stop; service '+env.upstart_script+' start GRIMLOCK=%s' % env.app_env)
 
 
 def record_release():

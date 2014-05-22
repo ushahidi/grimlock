@@ -7,6 +7,14 @@ keywords = [
         'tags': ['armed-conflict', 'conflict']
     },
     {
+        'word': 'militia',
+        'tags': ['armed-conflict', 'conflict']
+    },
+    {
+        'word': 'army',
+        'tags': ['armed-conflict', 'conflict']
+    },
+    {
         'word': 'kill',
         'tags': ['armed-conflict', 'conflict', 'death']
     },
