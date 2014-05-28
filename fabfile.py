@@ -94,7 +94,12 @@ def do_release(branch):
         run('python -m nltk.downloader maxent_treebank_pos_tagger')
     copy_private_files()
     check_upstart()
-    sudo('service '+env.upstart_script+' stop; service '+env.upstart_script+' start GRIMLOCK=%s' % env.app_env)
+
+    if env.app_env == 'production':
+        for i in range(4):
+            sudo('service '+env.upstart_script+' stop INST='+str(i)+'; service '+env.upstart_script+' start INST='+str(i)+' GRIMLOCK='+env.app_env)
+    else:
+        sudo('service '+env.upstart_script+' stop; service '+env.upstart_script+' start GRIMLOCK=%s' % env.app_env)
 
 
 def record_release():
