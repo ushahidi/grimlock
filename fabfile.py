@@ -22,6 +22,7 @@ def staging():
     env.upstart_script = 'grimlock'
     env.settings_file = 'staging_settings.py'
     env.app_env = 'staging'
+    env.num_workers = 1
 
 
 @task
@@ -34,6 +35,7 @@ def production():
     env.settings_file = 'production_settings.py'
     env.app_env = 'production'
     env.port = 15922
+    env.num_workers = 4
 
 
 def install_deps():
@@ -95,11 +97,8 @@ def do_release(branch):
     copy_private_files()
     check_upstart()
 
-    if env.app_env == 'production':
-        for i in range(4):
-            sudo('service '+env.upstart_script+' stop INST='+str(i)+'; service '+env.upstart_script+' start INST='+str(i)+' GRIMLOCK='+env.app_env)
-    else:
-        sudo('service '+env.upstart_script+' stop; service '+env.upstart_script+' start GRIMLOCK=%s' % env.app_env)
+    for i in range(env.num_workers):
+        sudo('service '+env.upstart_script+' stop INST='+str(i)+'; service '+env.upstart_script+' start INST='+str(i)+' GRIMLOCK='+env.app_env)
 
 
 def record_release():
