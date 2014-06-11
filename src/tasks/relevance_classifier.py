@@ -42,6 +42,9 @@ def setup(**kwargs):
         else:
             return []
 
+    if 'get_tags' in kwargs:
+        get_tags = kwargs['get_tags']
+
     tags = get_tags()
 
     

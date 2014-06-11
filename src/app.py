@@ -8,7 +8,7 @@ from config import settings
 from pipeline import process
 from tasks import (geocode, format_address, update_doc, identify_language, 
     add_default_values, reverse_geocode, extract_place, translate_content,
-    relevance_classifier, extract_content)
+    relevance_classifier, extract_content, donation_classifier)
 from cn_store_py.connect import get_connection
 from cn_search_py.connect import (setup_indexes, 
     get_connection as get_search_connection)
@@ -32,6 +32,11 @@ def source(item_collection, doc_id):
             }
         ]
         #print "Processing doc " + str(id)
+
+        # try
+        # except does not exist
+        # refresh and try again
+
         doc = item_collection.get(search_params)
         return doc
         #return db.Item.find_one()
@@ -39,35 +44,37 @@ def source(item_collection, doc_id):
     return get_doc
 
 
-def set_pipeline_steps(**kwargs):
+def set_pipeline_steps(steps, **kwargs):
     """ Define the order in which tasks should be executed in the pipeline. Each 
     task module should have a `run` method, which accepts a single argument 
     and either returns a value (probably a modified version of the object it 
     received) or saves to the database. 
 
     """
-    steps = [
-        add_default_values,
-        extract_content,
-        identify_language,
-        translate_content,
-        extract_place,
-        relevance_classifier,
-        format_address,
-        geocode,
-        reverse_geocode,
-        update_doc
-    ]
     
     return [mod.setup(**kwargs) if hasattr(mod, 'setup') else mod.run for mod in steps]
 
+
+default_tasks = [
+    add_default_values,
+    extract_content,
+    identify_language,
+    translate_content,
+    extract_place,
+    relevance_classifier,
+    donation_classifier,
+    format_address,
+    geocode,
+    reverse_geocode,
+    update_doc
+]
 
 class App(object):
     """ Polls the queue and runs each received job through the processing
     pipeline.
 
     """
-    def __init__(self, queue_name):
+    def __init__(self, queue_name, pipeline_steps = default_tasks):
         """ Init redis pubsub and subscribe to the appropriate channels. 
 
         Args:
@@ -80,7 +87,7 @@ class App(object):
         self.db = get_connection()
         self.search_db = get_search_connection()
         self.item_collection = ItemCollection(self.search_db)
-        self.pipeline = set_pipeline_steps(item_collection=self.item_collection)
+        self.pipeline = set_pipeline_steps(pipeline_steps, item_collection=self.item_collection)
 
 
     def work(self, item):
