@@ -16,9 +16,10 @@ def setup(**kwargs):
             'adminArea1'
         ]
 
-        for key in component_keys:
-            if key in data['geo']['addressComponents'] and data['geo']['addressComponents'][key] not in data['entities']:
-                data['entities'].append(data['geo']['addressComponents'][key])
+        if 'geo' in data and 'addressComponents' in data['geo']:
+            for key in component_keys:
+                if key in data['geo']['addressComponents'] and data['geo']['addressComponents'][key] not in data['entities']:
+                    data['entities'].append(data['geo']['addressComponents'][key])
 
         if 'item_collection' not in kwargs:
             raise 'update_doc task requires item_collection kwarg'
