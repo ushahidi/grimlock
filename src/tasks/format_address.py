@@ -4,7 +4,6 @@ def run(data):
     if 'geo' not in data:
         return data
 
-
     component_keys = [ 
         'neighborhood', 
         'adminArea5',
@@ -36,9 +35,10 @@ def run(data):
     if 'entities' not in data:
         data['entities'] = []
 
-    for key in component_keys:
-        if key in data['geo']['addressComponents'] and data['geo']['addressComponents'][key] not in data['entities']:
-            data['entities'].append(data['geo']['addressComponents'][key])
+    if 'addressComponents' in data['geo']:
+        for key in component_keys:
+            if key in data['geo']['addressComponents'] and data['geo']['addressComponents'][key] not in data['entities']:
+                data['entities'].append(data['geo']['addressComponents'][key])
 
 
     return data
