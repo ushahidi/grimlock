@@ -10,3 +10,4 @@ deploy_config.py
 src/tasks/worldcitiespop.txt
 src/tasks/locs.db
 src/cn_search_py/utils.py
+dump.rdb
