@@ -26,8 +26,6 @@ def setup(**kwargs):
         
         ic = kwargs['item_collection']
 
-        print "AAAAAAAAAAAAAAAAAAAA"
-        print data['entities']
         item = ic.make_model(data)
         item.save(refresh=True)
 

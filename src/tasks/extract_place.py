@@ -8,8 +8,6 @@ def setup(**kwargs):
 
 def run(data):
     if 'coords' in data['geo']:
-        print "05050505050505"
-        print data['geo']
         return data
 
     if 'fromURL' in data and data['source'] in ['gdelt']:
@@ -27,16 +25,10 @@ def run(data):
             'text': data[field]
         }
 
-    print "111111111"
     try:    
-        print "22222222222"
         pc = geograpy.get_place_context(**kwargs)
     except Exception, e:
-        print "2525252525"
         return data
-
-    print "333333333"
-    print pc.places
 
     if 'entities' not in data:
         data['entities'] = []
@@ -44,9 +36,6 @@ def run(data):
     for place in list(set(pc.places)):
         if place not in data['entities']:
             data['entities'].append(place)
-
-    print "444444444444444"
-    print data['entities']
 
     # starting from scratch with no location data
     if 'addressComponents' not in data['geo']:
@@ -107,9 +96,6 @@ def run(data):
                 # here to get the country and region.
                 build_from_city(data, pc)
 
-    
-    print "5555555555555555"
-    print data['entities']
     return data
 
 
