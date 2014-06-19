@@ -14,6 +14,7 @@ default_tasks = [
     identify_language,
     translate_content,
     extract_place,
+    #relevance_classifier,
     donation_classifier,
     format_address,
     geocode,
@@ -23,6 +24,7 @@ default_tasks = [
 
 def test():
     import json
+    import uuid
     from src.app import App, source
     from cn_search_py.connect import (setup_indexes, 
     get_connection as get_search_connection)
@@ -30,12 +32,14 @@ def test():
 
     app = App("transform", pipeline_steps = default_tasks)
 
+    random_id = str(uuid.uuid4())
+
     data = {
-      'remoteID': "291506692",
-      'content': "Expel or deport individuals",
-      'source': "gdelt",
+      'remoteID': random_id,
+      'content': "U.S. aerial intervention against ISIS could give the upper hand to Iraqi security forces on the ground. But air power alone won't decide the battle against the jihadist group, says Karl Mueller. http://on.rand.org/yc6jH",
+      'source': "facebook",
       'fromURL': "http://www.theage.com.au/world/taliban-attackers-mistake-armed-contractors-for-christian-daycare-workers-20140330-zqolw.html",
-      'summary': "Expel or deport individuals",
+      'summary': "U.S. aerial intervention against ISIS could give the upper hand to Iraqi security forces on the ground. But air power alone won't decide the battle against the jihadist group, says Karl Mueller. http://on.rand.org/yc6jH",
       'license': "unknown",
       'language': {
         'code': "en",
@@ -57,10 +61,6 @@ def test():
         }
       ],
       'geo': {
-        'coords': [
-          69.1833,
-          34.5167
-        ],
         'addressComponents': {
           'formattedAddress': "Kabul, Kabol, Afghanistan"
         }
@@ -69,9 +69,10 @@ def test():
     }
 
     item = app.item_collection.make_model(data)
-    saved = item.save()
+    saved = item.save(refresh=True)
 
     app.work(json.dumps({"id":str(saved['_id'])}))
     doc = source(app.item_collection, saved['_id'])()
 
-    assert doc['remoteID'] == "291506692"
+    assert doc['remoteID'] == random_id
+    assert 'Iraqi' in doc['entities']

@@ -25,8 +25,11 @@ def setup(**kwargs):
             raise 'update_doc task requires item_collection kwarg'
         
         ic = kwargs['item_collection']
+
+        print "AAAAAAAAAAAAAAAAAAAA"
+        print data['entities']
         item = ic.make_model(data)
-        item.save()
+        item.save(refresh=True)
 
         return item
 

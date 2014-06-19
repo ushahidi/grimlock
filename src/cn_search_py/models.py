@@ -22,8 +22,6 @@ class Model(object):
         kwargs['index'] = self.index
         kwargs['doc_type'] = self.doc_type
 
-        print kwargs
-
         return self.conn.index(**kwargs)
 
 
@@ -144,6 +142,6 @@ class Item(Model):
         if 'tags' in data:
             data['searchText'] += ' ' + ' '.join([tag['name'] for tag in data['tags']])
 
-        #data['searchText'] = search_text
+        #data['searchText'] = data['searchText']
 
         return data

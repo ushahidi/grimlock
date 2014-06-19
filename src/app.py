@@ -81,6 +81,7 @@ class App(object):
             r (redis.Redis): connected redis instance
             channels (array): string names of channels to which we should subscribe
         """
+
         self.queue = Queue(queue_name, host=settings.REDIS_HOST, 
             port=settings.REDIS_PORT, password=settings.REDIS_PASSWORD)
         self.queue.serializer = json
@@ -152,7 +153,6 @@ def run_for_set(item_collection, start_date=None, end_date=None):
 
     def run(offset=0):
         docs = item_collection.find(search_params, offset=offset)
-        print len(docs['docs'])
         for doc in docs['docs']:
             #pass
             process(lambda: doc, pipeline)
