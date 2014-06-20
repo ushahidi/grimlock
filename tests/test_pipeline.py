@@ -6,15 +6,16 @@ requests_log.setLevel(logging.WARNING)
 
 from src.tasks import (geocode, format_address, update_doc, identify_language, 
     add_default_values, reverse_geocode, extract_place, translate_content,
-    relevance_classifier, extract_content, donation_classifier)
+    relevance_classifier, extract_content, donation_classifier, image_tagger)
 
 default_tasks = [
     add_default_values,
-    extract_content,
+    #extract_content,
     identify_language,
     translate_content,
     extract_place,
     #relevance_classifier,
+    image_tagger,
     donation_classifier,
     format_address,
     geocode,
@@ -38,6 +39,7 @@ def test():
       'remoteID': random_id,
       'content': "U.S. aerial intervention against ISIS could give the upper hand to Iraqi security forces on the ground. But air power alone won't decide the battle against the jihadist group, says Karl Mueller. http://on.rand.org/yc6jH",
       'source': "facebook",
+      'image': 'https://fbcdn-photos-g-a.akamaihd.net/hphotos-ak-xap1/t1.0-0/10436089_642636699158835_6716614903784028712_s.jpg',
       'fromURL': "http://www.theage.com.au/world/taliban-attackers-mistake-armed-contractors-for-christian-daycare-workers-20140330-zqolw.html",
       'summary': "U.S. aerial intervention against ISIS could give the upper hand to Iraqi security forces on the ground. But air power alone won't decide the battle against the jihadist group, says Karl Mueller. http://on.rand.org/yc6jH",
       'license': "unknown",
@@ -75,4 +77,10 @@ def test():
     doc = source(app.item_collection, saved['_id'])()
 
     assert doc['remoteID'] == random_id
+
+    print "==============================================="
+    print [tag['name'] for tag in doc['tags']]
+    print doc
+
     assert 'Iraqi' in doc['entities']
+    assert 'photo-person' in [tag['name'] for tag in doc['tags']]
