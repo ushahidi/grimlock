@@ -10,7 +10,7 @@ from src.tasks import (geocode, format_address, update_doc, identify_language,
 
 default_tasks = [
     add_default_values,
-    #extract_content,
+    extract_content,
     identify_language,
     translate_content,
     extract_place,
@@ -77,10 +77,5 @@ def test():
     doc = source(app.item_collection, saved['_id'])()
 
     assert doc['remoteID'] == random_id
-
-    print "==============================================="
-    print [tag['name'] for tag in doc['tags']]
-    print doc
-
     assert 'Iraqi' in doc['entities']
     assert 'photo-person' in [tag['name'] for tag in doc['tags']]

@@ -1,5 +1,6 @@
 import requests
 import urllib
+from config import settings
 
 def run(data):
     if 'image' not in data:
@@ -7,7 +8,7 @@ def run(data):
 
     url = 'http://access.alchemyapi.com/calls/url/URLGetRankedImageKeywords'
     params = {
-        'apikey': '7acef4ecaf5f8574f867cb45404f63357a7c3a18',
+        'apikey': settings.ALCHEMY_API_KEY,
         'url': data['image'],
         'imagePostMode': 'not-raw',
         'outputMode': 'json'
