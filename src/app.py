@@ -127,7 +127,7 @@ def run_for_set(item_collection, start_date=None, end_date=None):
     if not start_date:
         raise Exception("run_for_set start_date is required") 
 
-    pipeline = set_pipeline_steps(item_collection=item_collection)
+    pipeline = set_pipeline_steps(default_tasks, item_collection=item_collection)
 
     # No need to fail gracefully here. If the format is wrong go ahead and crash
     start = datetime.strptime(start_date, "%Y-%m-%d")
@@ -145,12 +145,10 @@ def run_for_set(item_collection, start_date=None, end_date=None):
             'field':'updatedAt',
             'value': search_val,
             'op': search_op
-        },
-        {
-            'field': 'source',
-            'value': 'twitter'
         }
     ]
+
+    print search_params
 
     def run(offset=0):
         docs = item_collection.find(search_params, offset=offset)
@@ -159,6 +157,7 @@ def run_for_set(item_collection, start_date=None, end_date=None):
             process(lambda: doc, pipeline)
 
         offset += len(docs['docs'])
+        #print "Running for " + str(docs['total']) + " docs"
         if offset < docs['total']:
             run(offset=offset)
         else:
