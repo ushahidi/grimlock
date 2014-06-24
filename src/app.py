@@ -96,6 +96,7 @@ class App(object):
         """ Feed jobs from the queue into the pipeline """
         try:
             data = json.loads(item)
+            logger.info('Processing task: '+data['id'])
             process(source(self.item_collection, data['id']), self.pipeline)
         except Exception, e:
             import traceback
