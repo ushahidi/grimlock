@@ -7,7 +7,7 @@ def setup(**kwargs):
     return run
 
 def run(data):
-    if 'coords' in data['geo']:
+    if 'geo' in data and 'coords' in data['geo']:
         return data
 
     if 'fromURL' in data and data['source'] in ['gdelt']:
@@ -38,6 +38,9 @@ def run(data):
             data['entities'].append(place)
 
     # starting from scratch with no location data
+    if 'geo' not in data:
+        data['geo'] = {}
+        
     if 'addressComponents' not in data['geo']:
         data['geo']['addressComponents'] = {}
         if pc.countries:

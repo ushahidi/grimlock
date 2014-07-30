@@ -92,8 +92,10 @@ def setup(**kwargs):
 
         if 'contentEnglish' in data:
             combined_text = data['contentEnglish']
-        else:
+        elif 'searchText' in data:
             combined_text = data['searchText']
+        else:
+            combined_text = data['content']
 
         for keyword in word_tag_map.keywords:
             if keyword['word'] in combined_text:
@@ -106,7 +108,12 @@ def setup(**kwargs):
             if tag['name'] == 'conflict' or tag['name'] == 'disaster':
                 continue
 
+            # Look for ' word '
             if ' ' + tag['name'].replace('-', ' ').lower() + ' ' in combined_text and not has_tag(tag['name'], found_tags):
+                add_tag(tag)
+
+            # Look for ' word.'
+            if ' ' + tag['name'].replace('-', ' ').lower() + '.' in combined_text and not has_tag(tag['name'], found_tags):
                 add_tag(tag)
 
 

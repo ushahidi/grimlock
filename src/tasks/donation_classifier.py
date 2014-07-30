@@ -47,7 +47,7 @@ def run(data):
                     'confidence': resp_json['offer_classification_probb']
                 })
     else:
-        logger.error("Donation classifier failed! " + str(r.status_code) + " ... " + r.text + " ... " + str(e))
+        logger.error("Donation classifier failed! " + str(r.status_code) + " ... " + r.text)
 
 
     return data

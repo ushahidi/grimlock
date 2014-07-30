@@ -79,3 +79,36 @@ def test():
     assert doc['remoteID'] == random_id
     assert 'Iraqi' in doc['entities']
     assert 'photo-person' in [tag['name'] for tag in doc['tags']]
+
+    rand_id2 = str(uuid.uuid4())
+    data2 = {
+      'remoteID': rand_id2,
+      'content': "RT @dharmabum1: @chrisdbianchi @USTornadoes here's another shot of the tornado. It touched down near the Denver jail. http://t.co/wRQiGuOIVC",
+      'source': "twitter",
+      'image': 'http://pbs.twimg.com/media/Btqddf2CIAIVDSo.jpg',
+      'summary': "RT @dharmabum1: @chrisdbianchi @USTornadoes here's another shot of the tornado. It touched down near the Denver jail. http://t.co/wRQiGuOIVC",
+      'license': "unknown",
+      'language': {
+        'code': "en",
+        'name': "English",
+        'nativeName': "English"
+      },
+      'tags': [
+        {
+          'name': "weather",
+          'confidence': 1
+        }
+      ],
+      'lifespan': "temporary"
+    }
+
+    item = app.item_collection.make_model(data2)
+    saved = item.save(refresh=True)
+
+    app.work(json.dumps({"id":str(saved['_id'])}))
+    doc = source(app.item_collection, saved['_id'])()
+
+    assert doc['remoteID'] == rand_id2
+
+    assert 'Weather' not in doc['entities']
+    #assert 'tornado' in [tag['name'] for tag in doc['tags']]
