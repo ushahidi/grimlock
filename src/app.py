@@ -63,7 +63,7 @@ default_tasks = [
     translate_content,
     extract_place,
     relevance_classifier,
-    donation_classifier,
+    #donation_classifier,
     format_address,
     geocode,
     reverse_geocode,
